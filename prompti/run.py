@@ -2,15 +2,16 @@ from prompti.prompts.base import Prompt
 from prompti.prompts.prompt_loader import prompt_loader
 from pprint import pprint
 
-from typing import Dict 
+from typing import Dict
 from typing import Any
 
 import textstat
 
+
 def main():
     prompt = Prompt()
     prompt.create_prompt(
-        prompt = """
+        prompt="""
         This is a prompt with a {{variable}} and this is another variable {{variable2}}
         Now we can add some more text here
         and here.
@@ -30,6 +31,7 @@ def main():
     print(metadata["prompt"])
     print(metadata["variables"])
     print(metadata["parameters"])
+
 
 def main2():
     text = """
@@ -51,7 +53,8 @@ def main2():
     metrics = get_text_stats(text)
     pprint(metrics)
 
-def get_text_stats(text:str)->Dict[str, Any]:
+
+def get_text_stats(text: str) -> Dict[str, Any]:
     """
     Get the text metrics from the text
 

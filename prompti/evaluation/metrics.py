@@ -1,10 +1,10 @@
-from typing import Any 
-from typing import Dict 
+from typing import Any
+from typing import Dict
 
 import textstat
 
 
-def get_text_stats(text:str)->Dict[str, Any]:
+def get_text_stats(text: str) -> Dict[str, Any]:
     """
     Get the text metrics from the text
 

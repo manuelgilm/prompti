@@ -5,7 +5,8 @@ from pathlib import Path
 from prompti.prompts.base import Prompt
 import pickle
 
-def prompt_loader(path: Union[str, Path])->Prompt:
+
+def prompt_loader(path: Union[str, Path]) -> Prompt:
     """
     Load the prompt from the path
 
@@ -15,7 +16,7 @@ def prompt_loader(path: Union[str, Path])->Prompt:
     # Load the prompt
     if isinstance(path, str):
         path = Path(path)
-    
+
     with open(path.as_posix(), "rb") as f:
         prompt_obj = pickle.load(f)
     return prompt_obj
