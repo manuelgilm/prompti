@@ -17,20 +17,16 @@ def main():
         and here.
         """,
         name="testing_prompt",
-        model_name="gpt-2",
-        temperature=0.5,
-        max_tokens=100,
     )
     prompt.save("custom_prompts/testing_prompts")
 
     # # load the prompt
-    my_prompt = prompt_loader("custom_prompts/testing_prompts/testing_prompt.pkl")
+    my_prompt = Prompt().load("custom_prompts/testing_prompts/testing_prompt.pkl")
     print(type(my_prompt))
-    metadata = my_prompt.metadata
-    print(metadata["prompt_name"])
-    print(metadata["prompt"])
-    print(metadata["variables"])
-    print(metadata["parameters"])
+    print(my_prompt.prompt_name)
+    print(my_prompt.raw_prompt)
+    print("--predict--")
+    print(my_prompt.predict(variable="var1", variable2="var2"))
 
 
 def main2():
