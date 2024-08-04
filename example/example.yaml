@@ -1,7 +1,0 @@
-parameters:
-  max_tokens: 100
-  model_name: gpt-2
-  temperature: 0.5
-prompt: This is a prompt with a {{variable}}
-variables:
-- variable
