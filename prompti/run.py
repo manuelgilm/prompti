@@ -18,15 +18,17 @@ def main():
         """,
         name="testing_prompt",
     )
-    prompt.save("custom_prompts/testing_prompts")
+    prompt.save("custom_prompts/testing_prompt.pkl")
 
     # # load the prompt
-    my_prompt = Prompt().load("custom_prompts/testing_prompts/testing_prompt.pkl")
+    my_prompt = Prompt().load("custom_prompts/testing_prompt.pkl")
     print(type(my_prompt))
     print(my_prompt.prompt_name)
     print(my_prompt.raw_prompt)
     print("--predict--")
     print(my_prompt.predict(variable="var1", variable2="var2"))
+    print("--prompt--")
+    print(my_prompt.prompt)
 
 
 def main2():

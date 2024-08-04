@@ -1,17 +1,17 @@
 from abc import ABC
 from abc import abstractmethod
 
-from typing import Dict
-from typing import Any
 from typing import List
 from typing import Union
-from typing import Optional
+
 
 from pathlib import Path
-from ruamel.yaml.representer import RoundTripRepresenter
-from ruamel.yaml import YAML
 import re
 import pickle
+
+from prompti.utils.save import save_as_pickle
+from prompti.prompts.prompt_loader import pickle_loader
+from prompti.utils.string_utils import replace_variables_in_prompt
 
 
 class BasePrompt(ABC):
@@ -29,14 +29,14 @@ class BasePrompt(ABC):
         Save the prompt to a file.
         """
         return
-    
+
     @abstractmethod
     def predict(self, **kwargs):
         """
         Predict the output from the prompt
         """
         return
-    
+
     @classmethod
     def load(cls, path: Union[str, Path]):
         """
@@ -44,8 +44,12 @@ class BasePrompt(ABC):
         """
         return
 
-class Prompt(BasePrompt):
+    @property
+    def prompt(self):
+        return self.raw_prompt
 
+
+class Prompt(BasePrompt):
 
     def create_prompt(self, name: str, prompt: str):
         """
@@ -69,19 +73,13 @@ class Prompt(BasePrompt):
         variable_list = re.findall(r"\{{(.*?)\}}", prompt)
         return variable_list
 
-
     def save(self, path: Union[str, Path]):
         """
         Save the prompt to a file.
 
         :param path: The path to save the prompt to
         """
-        if isinstance(path, str):
-            path = Path(path)
-        path.mkdir(parents=True, exist_ok=True)
-
-        with open(path / f"{self.prompt_name}.pkl", "wb") as f:
-            pickle.dump(self, f)
+        save_as_pickle(self, path)
 
     def predict(self, **kwargs):
         """
@@ -89,7 +87,7 @@ class Prompt(BasePrompt):
         """
         # Get the variables from the prompt
         variables = self.prompt_variables
-        
+
         # Get the variables from the kwargs
         variable_values = {}
         for variable in variables:
@@ -98,12 +96,9 @@ class Prompt(BasePrompt):
             variable_values[variable] = kwargs[variable]
 
         # Replace the variables in the prompt
-        prompt = self.raw_prompt
-        for variable, value in variable_values.items():
-            prompt = prompt.replace(f"{{{{{variable}}}}}", value)
-
+        prompt = replace_variables_in_prompt(self.raw_prompt, variable_values)
         return prompt
-        
+
     @classmethod
     def load(cls, path: Union[str, Path]):
         """
@@ -112,9 +107,16 @@ class Prompt(BasePrompt):
         :param path: The path to load the prompt from
         :return: The prompt object
         """
-        if isinstance(path, str):
-            path = Path(path)
-
-        with open(path.as_posix(), "rb") as f:
-            prompt_obj = pickle.load(f)
+        prompt_obj = pickle_loader(path)
         return prompt_obj
+
+
+class ZeroShotPrompt(BasePrompt):
+
+    def __init__(
+        self, prompt: str, model_name: str, temperature: float, max_tokens: int
+    ):
+        self.raw_prompt = prompt
+        self.model_name = model_name
+        self.temperature = temperature
+        self.max_tokens = max_tokens
