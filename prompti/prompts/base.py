@@ -7,11 +7,10 @@ from typing import Union
 
 from pathlib import Path
 import re
-import pickle
 
 from prompti.utils.save import save_as_pickle
-from prompti.prompts.prompt_loader import pickle_loader
 from prompti.utils.string_utils import replace_variables_in_prompt
+from prompti.prompts.prompt_loader import pickle_loader
 
 
 class BasePrompt(ABC):
@@ -109,14 +108,3 @@ class Prompt(BasePrompt):
         """
         prompt_obj = pickle_loader(path)
         return prompt_obj
-
-
-class ZeroShotPrompt(BasePrompt):
-
-    def __init__(
-        self, prompt: str, model_name: str, temperature: float, max_tokens: int
-    ):
-        self.raw_prompt = prompt
-        self.model_name = model_name
-        self.temperature = temperature
-        self.max_tokens = max_tokens
